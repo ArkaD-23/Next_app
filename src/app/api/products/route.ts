@@ -1,5 +1,5 @@
 import { productSchema } from "@/lib/validators/productSchema";
-import { writeFile } from "node:fs/promises";
+import { unlink, writeFile } from "node:fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import path from "node:path";
 import { db } from "@/lib/db/db";
@@ -33,6 +33,11 @@ export async function POST(req: NextRequest) {
     try {
         await db.insert(products).values({...validatedData, image: filename});
     } catch (error) {
+        try {
+            await unlink(path.join(process.cwd(), "public/assets", filename));
+        } catch (unlinkError) {
+            console.error("Failed to delete the file after a database error:", unlinkError);
+        }
         return NextResponse.json({status: 500, message: "Failed to store product into the database"});
     }
 
