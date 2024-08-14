@@ -19,4 +19,13 @@ export async function POST(req: NextRequest) {
     } catch (error) {
         return NextResponse.json({status: 500, message:"Failed to insert in db"});
     }
-}
+};
+
+export async function GET() {
+    try {
+        const allWarehouses = await db.select().from(warehouses);
+        return NextResponse.json(allWarehouses);
+    } catch (error) {
+        return NextResponse.json({status: 500, message: "Cannot fetch any warehouse"})
+    }
+};
