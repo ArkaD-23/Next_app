@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import path from "node:path";
 import { db } from "@/lib/db/db";
 import { products } from "@/lib/db/schema";
+import { desc } from "drizzle-orm";
 
 export async function POST(req: NextRequest) {
     const data = await req.formData();
@@ -42,4 +43,13 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({status: 201, message: "OK! everything went well"});
-}
+};
+
+export async function GET() { 
+    try {
+        const allProducts = await db.select().from(products).orderBy(desc(products.id));
+        return NextResponse.json(allProducts);
+    } catch (error) {
+        return NextResponse.json({status: 500, message: "Error while fetching product data"});
+    }
+};
