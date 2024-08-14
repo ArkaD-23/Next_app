@@ -28,4 +28,4 @@ export async function GET(
       message: `Failed the product with id ${id}`,
     });
   }
-}
+};
